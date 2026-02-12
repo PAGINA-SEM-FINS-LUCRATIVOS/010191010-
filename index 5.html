@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Painel VIP - Sistema de Acesso</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-hover: #00cc6a;
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.98);
+            --whatsapp: #25d366;
+            --accent: #00ddeb;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border-glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at top, #1a1a1a, #000);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            min-height: 100vh;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        /* --- TELA DE LOGIN --- */
+        #login-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 350px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.1);
+        }
+
+        .captcha-box {
+            background: #111;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #333;
+            text-align: left;
+        }
+
+        .captcha-box input { width: 20px !important; margin: 0 !important; cursor: pointer; }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 11px;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        /* --- SISTEMA PRINCIPAL --- */
+        #main-system { display: none; width: 100%; flex-direction: column; align-items: center; }
+
+        .container {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 10px 50px rgba(0, 255, 136, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: center;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: #222;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+            overflow: hidden;
+            height: 8px;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            transition: width 0.4s ease;
+        }
+
+        .card-planos {
+            background: linear-gradient(145deg, #111, #050505);
+            width: 90%;
+            max-width: 380px;
+            padding: 20px;
+            border-radius: 20px;
+            border: 1px solid #333;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .card-planos h2 { color: var(--primary); font-size: 18px; margin: 0 0 10px 0; }
+        .card-planos p { font-size: 13px; color: #aaa; margin-bottom: 15px; }
+
+        .btn-planos {
+            display: block;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 10px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            transition: 0.3s;
+        }
+
+        .btn-planos:hover { background: var(--primary); color: #000; box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+
+        .badge-timer {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--primary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { font-size: 11px; color: #888; text-transform: uppercase; font-weight: bold; margin-left: 5px; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border-radius: 12px;
+            border: 1px solid #333;
+            background: #0f0f0f;
+            color: white;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus { border-color: var(--primary); outline: none; background: #151515; }
+
+        button.btn-action {
+            width: 100%;
+            padding: 16px;
+            margin-top: 10px;
+            border-radius: 12px;
+            border: none;
+            background: var(--primary);
+            color: black;
+            font-weight: 800;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
+            transition: 0.3s;
+        }
+
+        button.btn-action:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 255, 136, 0.4); }
+
+        /* --- CARD DE RESULTADO VIP --- */
+        .resultado {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(20,20,20,1) 0%, rgba(5,5,5,1) 100%);
+            border-radius: 24px;
+            display: none;
+            text-align: left;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resultado::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+        }
+
+        .info-box {
+            background: var(--glass);
+            padding: 18px;
+            margin: 12px 0;
+            border-radius: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            line-height: 1.8;
+            border: 1px solid var(--border-glass);
+        }
+
+        .info-box span { color: #888; font-weight: 400; font-size: 11px; display: block; margin-bottom: -4px; text-transform: uppercase;}
+        .info-box b { color: #fff; font-size: 15px; font-family: monospace; letter-spacing: 1px; }
+
+        .btn-copy-simple {
+            background: rgba(255,255,255,0.05);
+            color: #ccc;
+            border: 1px solid #333;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            margin-bottom: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-copy-full {
+            background: white;
+            color: black;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center; gap: 8px; justify-content: center;
+        }
+
+        .btn-whats {
+            background: var(--whatsapp);
+            color: #fff;
+            text-decoration: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px; justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.2);
+        }
+
+        .download-link {
+            display: block; background: #111; padding: 14px; border-radius: 12px;
+            text-decoration: none; color: var(--primary);
+            font-size: 13px; font-weight: 800; text-align: center; border: 1px solid var(--primary);
+            margin-top: 10px; transition: 0.3s;
+        }
+
+        .aviso-expira {
+            font-size: 11px; color: #ffaa00; background: rgba(255, 170, 0, 0.05);
+            padding: 14px; border-radius: 12px; margin-top: 15px; border: 1px solid rgba(255, 170, 0, 0.2); text-align: center;
+        }
+
+        #toast {
+            visibility: hidden; min-width: 280px; background-color: var(--primary);
+            color: #000; text-align: center; border-radius: 50px; padding: 15px;
+            position: fixed; z-index: 10000; bottom: 30px; left: 50%;
+            transform: translateX(-50%); font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
+
+        #pin-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 10001;
+            display: none; justify-content: center; align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
+        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+    </style>
+</head>
+<body>
+
+<div id="toast">Mensagem</div>
+
+<div id="login-overlay">
+    <div class="login-card">
+        <h2 style="color: var(--primary); margin-top: 0;">Restrito</h2>
+        <p style="font-size: 12px; color: #888;">Faça login para acessar o painel</p>
+
+        <div class="form-group">
+            <label>Usuário</label>
+            <input type="text" id="user-login" placeholder="@usuario">
+        </div>
+        <div class="form-group">
+            <label>Senha</label>
+            <input type="password" id="pass-login" placeholder="••••••••">
+        </div>
+
+        <div class="captcha-box">
+            <input type="checkbox" id="no-robot">
+            <label for="no-robot" style="font-size: 13px; color: #ccc; cursor: pointer;">Não sou um robô</label>
+        </div>
+
+        <button class="btn-action" onclick="validarLogin()">LOGAR NO SISTEMA</button>
+        <button class="btn-link" onclick="abrirPinModal('master')">Entrar via Código Digital</button>
+    </div>
+</div>
+
+<div id="pin-modal">
+    <div class="login-card">
+        <h3 id="pin-title" style="color: var(--primary);">Digite o PIN</h3>
+        <input type="password" id="pin-input" style="text-align: center; letter-spacing: 10px; font-size: 24px;" maxlength="6">
+        <button class="btn-action" id="pin-confirm-btn">CONFIRMAR</button>
+        <button class="btn-link" onclick="fecharPinModal()">Cancelar</button>
+    </div>
+</div>
+
+<div id="main-system">
+    <div class="container">
+        <h1>Painel Gerador</h1>
+        <div class="badge-timer">⏱ STATUS: SISTEMA ONLINE</div>
+
+        <div class="form-group">
+            <label>Nome do Cliente</label>
+            <input type="text" id="nome" placeholder="Nome para o ticket" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Seu Dispositivo</label>
+            <select id="dispositivo">
+                <option value="android">Celular Android / TV Box</option>
+                <option value="ios">iPhone / iPad / Apple TV</option>
+                <option value="roku">Roku TV / LG / Samsung</option>
+                <option value="pc">Computador / Web Player</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Preferência de Conteúdo</label>
+            <select id="conteudo">
+                <option value="normal">Filtro: Sem Conteúdo Adulto</option>
+                <option value="adulto">Liberar: Com Conteúdo Adulto</option>
+            </select>
+        </div>
+
+        <button id="btnGerar" class="btn-action" onclick="gerarTeste()">GERAR ACESSO IMEDIATO</button>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <div id="anchor-resultado"></div>
+        <div class="resultado" id="resultado"></div>
+    </div>
+
+    <div class="card-planos">
+        <h2>💎 Upgrade para o Plano VIP</h2>
+        <p>Canais em 4K, Sem Travas e Suporte 24h.</p>
+        <a href="https://iptv-planos.vercel.app/" target="_blank" rel="noopener" class="btn-planos">VER TABELA DE PREÇOS</a>
+    </div>
+</div>
+
+<script>
+const CREDENCIAIS = { user: "@ApelaWar71", pass: "apelinhaRt2929", pin: "2244", masterCode: "002133" };
+
+function showToast(msg) {
+    const x = document.getElementById("toast");
+    x.innerText = msg;
+    x.className = "show";
+    setTimeout(() => { x.className = x.className.replace("show", ""); }, 3500);
+}
+
+let currentPinMode = '';
+function abrirPinModal(mode) {
+    currentPinMode = mode;
+    document.getElementById("pin-modal").style.display = "flex";
+    document.getElementById("pin-input").value = "";
+    document.getElementById("pin-input").focus();
+    document.getElementById("pin-title").innerText = mode === 'master' ? "Código Digital" : "PIN de Acesso";
+
+    document.getElementById("pin-confirm-btn").onclick = function() {
+        const val = document.getElementById("pin-input").value;
+        if (currentPinMode === 'master') {
+            if (val === CREDENCIAIS.masterCode) {
+                fecharPinModal();
+                liberarSistema("👑 Bem vindo apela war mestre nossas funcionalidades estão on-line!");
+            } else { showToast("❌ Código Inválido!"); }
+        } else {
+            if (val === CREDENCIAIS.pin) {
+                fecharPinModal();
+                liberarSistema("✅ Autenticação realizada com sucesso!");
+            } else { showToast("❌ PIN Incorreto!"); }
+        }
+    };
+}
+
+function fecharPinModal() { document.getElementById("pin-modal").style.display = "none"; }
+
+function validarLogin() {
+    const u = document.getElementById("user-login").value;
+    const p = document.getElementById("pass-login").value;
+    const r = document.getElementById("no-robot").checked;
+    if (u === CREDENCIAIS.user && p === CREDENCIAIS.pass) {
+        if (!r) { showToast("⚠️ Marque 'Não sou um robô'"); return; }
+        abrirPinModal('login');
+    } else { showToast("❌ Usuário ou Senha inválidos!"); }
+}
+
+function liberarSistema(mensagem) {
+    document.getElementById("login-overlay").style.display = "none";
+    document.getElementById("main-system").style.display = "flex";
+    showToast(mensagem);
+}
+
+async function gerarTeste() {
+    const btn = document.getElementById("btnGerar");
+    const nomeInput = document.getElementById("nome").value.trim();
+    const dispositivo = document.getElementById("dispositivo").value;
+    const conteudo = document.getElementById("conteudo").value;
+    const resultado = document.getElementById("resultado");
+    const pContainer = document.getElementById("progressContainer");
+    const pBar = document.getElementById("progressBar");
+
+    if (!nomeInput) { showToast("⚠️ Por favor, preencha o nome do cliente!"); return; }
+
+    btn.disabled = true;
+    btn.innerText = "Sincronizando Banco de Dados...";
+    resultado.style.display = "none";
+    pContainer.style.display = "block";
+    pBar.style.width = "0%";
+
+    setTimeout(() => pBar.style.width = "60%", 300);
+
+    try {
+        const response = await fetch("https://meuservidor.sigma.vin/api/chatbot/0VDVVonDK3/RYAWRk1jlx", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome: nomeInput, conteudo: conteudo })
+        });
+
+        const data = await response.json();
+        pBar.style.width = "100%";
+
+        const usuario = data.usuario || data.username || "ERRO";
+        const senha = data.senha || data.password || "ERRO";
+        const dns = "http://dnscloud.shop:80";
+        const webPlayer = "http://webplayer.veloznetv.fun";
+
+        const linksApps = {
+            android: "https://xciptv.br.uptodown.com/android",
+            ios: "https://apps.apple.com/app/id6459474877",
+            roku: "https://www.roku.com/br",
+            pc: webPlayer
+        };
+
+        const linkAppSelecionado = linksApps[dispositivo];
+        const linkM3U = `${dns}/get.php?username=${encodeURIComponent(usuario)}&password=${encodeURIComponent(senha)}&type=m3u_plus&output=mpegts`;
+        const agora = new Date();
+        const vencimento = new Date(agora.getTime() + (2 * 60 * 60 * 1000));
+        const formatHora = (d) => d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+
+        let msgFull = "💎 *TICKET DE ACESSO VIP* 💎\n";
+        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msgFull += "👤 *NOME DO CLIENTE:* " + nomeInput + "\n";
+        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msgFull += "🔐 *DADOS DE ACESSO:* \n";
+        msgFull += "👤 *USUÁRIO:* `" + usuario + "`\n";
+        msgFull += "🔑 *SENHA:* `" + senha + "`\n";
+        msgFull += "📍 *URL:* `" + dns + "`\n";
+        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msgFull += "💡 *DICA:* Se o seu App pedir 4 campos:\n";
+        msgFull += "No 1º campo (Nome), coloque qualquer nome e use os dados acima nos demais.\n";
+        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msgFull += "📥 *BAIXAR APP:* \n" + linkAppSelecionado + "\n";
+        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
+        msgFull += "⏳ *VÁLIDO ATÉ:* " + formatHora(vencimento) + "\n";
+        msgFull += "💰 *RENOVAR:* https://iptv-planos.vercel.app/";
+
+        let msgSimple = `👤 Usuário: ${usuario}\n🔑 Senha: ${senha}\n📍 URL: ${dns}`;
+
+        setTimeout(() => {
+            pContainer.style.display = "none";
+            resultado.style.display = "block";
+            document.getElementById('anchor-resultado').scrollIntoView({behavior: "smooth"});
+
+            resultado.innerHTML = `
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <div class="badge-timer" style="background:rgba(0, 255, 136, 0.1); border: 1px solid var(--primary);">ATIVADO: SISTEMA CLOUD</div>
+                    <h3 style="color:#fff; margin:10px 0; font-size:18px;">✅ ACESSO LIBERADO</h3>
+                </div>
+
+                <div class="info-box">
+                    <span>👤 Nome do cliente</span>
+                    <b>${nomeInput}</b>
+                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
+                    <span>👤 Usuário</span>
+                    <b>${usuario}</b>
+                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
+                    <span>🔑 Senha</span>
+                    <b>${senha}</b>
+                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
+                    <span>📍 URL / DNS</span>
+                    <b style="font-size:12px;">${dns}</b>
+                </div>
+
+                <div class="aviso-expira" style="background: rgba(0, 255, 136, 0.05); color: var(--primary); border: 1px solid var(--primary); margin-top: 10px; font-weight:600;">
+                    💡 DICA: Se o app pedir 4 campos, coloque qualquer nome no primeiro campo.
+                </div>
+
+                <div style="margin-top:20px;">
+                    <button class="btn-copy-full" onclick="copiarTexto('${msgFull.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '🚀 Ticket Profissional Copiado!')">
+                        📋 COPIAR TICKET COMPLETO
+                    </button>
+
+                    <button class="btn-copy-simple" onclick="copiarTexto('${msgSimple.replace(/\n/g, "\\n")}', '🔑 Credenciais Copiadas!')">
+                        📄 COPIAR APENAS LOGIN
+                    </button>
+                </div>
+
+                <a href="https://api.whatsapp.com/send?phone=5532984660603&text=${encodeURIComponent(msgFull)}" target="_blank" class="btn-whats">
+                    💬 ENVIAR PARA WHATSAPP
+                </a>
+
+                <a href="${linkAppSelecionado}" class="download-link" target="_blank">
+                   📥 BAIXAR APLICATIVO OFICIAL
+                </a>
+
+                <div class="aviso-expira">
+                    Acesso expira às <b>${formatHora(vencimento)}</b>. Contrate o plano mensal pelo suporte.
+                </div>
+            `;
+        }, 800);
+
+    } catch (error) {
+        pContainer.style.display = "none";
+        resultado.style.display = "block";
+        resultado.innerHTML = "❌ Erro Crítico: Verifique a conexão com o servidor.";
+    } finally {
+        btn.disabled = false;
+        btn.innerText = "GERAR ACESSO IMEDIATO";
+    }
+}
+
+function copiarTexto(texto, aviso) {
+    const textoFormatado = texto.replace(/\\n/g, '\n');
+    navigator.clipboard.writeText(textoFormatado).then(() => {
+        showToast(aviso);
+    });
+}
+</script>
+
+</body>
+</html>
