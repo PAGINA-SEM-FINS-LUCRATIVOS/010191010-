@@ -215,12 +215,10 @@
             border-radius: 16px;
             font-family: 'Inter', sans-serif;
             font-size: 13px;
-            line-height: 1.8;
+            line-height: 1.6;
             border: 1px solid var(--border-glass);
+            white-space: pre-wrap;
         }
-
-        .info-box span { color: #888; font-weight: 400; font-size: 11px; display: block; margin-bottom: -4px; text-transform: uppercase;}
-        .info-box b { color: #fff; font-size: 15px; font-family: monospace; letter-spacing: 1px; }
 
         .btn-copy-simple {
             background: rgba(255,255,255,0.05);
@@ -381,6 +379,7 @@
 
 <script>
 const CREDENCIAIS = { user: "@ApelaWar71", pass: "apelinhaRt2929", pin: "2244", masterCode: "002133" };
+let timerInterval;
 
 function showToast(msg) {
     const x = document.getElementById("toast");
@@ -431,6 +430,27 @@ function liberarSistema(mensagem) {
     showToast(mensagem);
 }
 
+function iniciarCronometro(vencimento) {
+    if (timerInterval) clearInterval(timerInterval);
+    
+    function atualizar() {
+        const agora = new Date().getTime();
+        const dist = vencimento - agora;
+        if (dist < 0) {
+            document.getElementById("clock-display").innerHTML = "EXPIRADO";
+            clearInterval(timerInterval);
+            return;
+        }
+        const h = Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((dist % (1000 * 60)) / 1000);
+        document.getElementById("clock-display").innerHTML = 
+            (h < 10 ? "0"+h : h) + ":" + (m < 10 ? "0"+m : m) + ":" + (s < 10 ? "0"+s : s);
+    }
+    timerInterval = setInterval(atualizar, 1000);
+    atualizar();
+}
+
 async function gerarTeste() {
     const btn = document.getElementById("btnGerar");
     const nomeInput = document.getElementById("nome").value.trim();
@@ -448,7 +468,9 @@ async function gerarTeste() {
     pContainer.style.display = "block";
     pBar.style.width = "0%";
 
-    setTimeout(() => pBar.style.width = "60%", 300);
+    // MELHORIA: Logs de atividade no botão
+    setTimeout(() => { btn.innerText = "Reservando vaga no Cloud..."; pBar.style.width = "30%"; }, 1000);
+    setTimeout(() => { btn.innerText = "Criptografando Acesso VIP..."; pBar.style.width = "60%"; }, 2500);
 
     try {
         const response = await fetch("https://meuservidor.sigma.vin/api/chatbot/0VDVVonDK3/RYAWRk1jlx", {
@@ -459,6 +481,7 @@ async function gerarTeste() {
 
         const data = await response.json();
         pBar.style.width = "100%";
+        btn.innerText = "Acesso Gerado com Sucesso!";
 
         const usuario = data.usuario || data.username || "ERRO";
         const senha = data.senha || data.password || "ERRO";
@@ -473,27 +496,26 @@ async function gerarTeste() {
         };
 
         const linkAppSelecionado = linksApps[dispositivo];
-        const linkM3U = `${dns}/get.php?username=${encodeURIComponent(usuario)}&password=${encodeURIComponent(senha)}&type=m3u_plus&output=mpegts`;
         const agora = new Date();
-        const vencimento = new Date(agora.getTime() + (2 * 60 * 60 * 1000));
+        const tempoVencimento = agora.getTime() + (2 * 60 * 60 * 1000);
+        const vencimentoObj = new Date(tempoVencimento);
         const formatHora = (d) => d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-        let msgFull = "💎 *TICKET DE ACESSO VIP* 💎\n";
-        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msgFull += "👤 *NOME DO CLIENTE:* " + nomeInput + "\n";
-        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msgFull += "🔐 *DADOS DE ACESSO:* \n";
-        msgFull += "👤 *USUÁRIO:* `" + usuario + "`\n";
-        msgFull += "🔑 *SENHA:* `" + senha + "`\n";
-        msgFull += "📍 *URL:* `" + dns + "`\n";
-        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msgFull += "💡 *DICA:* Se o seu App pedir 4 campos:\n";
-        msgFull += "No 1º campo (Nome), coloque qualquer nome e use os dados acima nos demais.\n";
-        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msgFull += "📥 *BAIXAR APP:* \n" + linkAppSelecionado + "\n";
-        msgFull += "━━━━━━━━━━━━━━━━━━━━━━━\n";
-        msgFull += "⏳ *VÁLIDO ATÉ:* " + formatHora(vencimento) + "\n";
-        msgFull += "💰 *RENOVAR:* https://iptv-planos.vercel.app/";
+        let msgFull = "💎 TESTE GERADO • \nACESSO AO IPTV 💎\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n\n";
+        msgFull += "👤 1️⃣ CLIENTE\n➜ Nome: " + nomeInput + "\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n";
+        msgFull += "🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: " + usuario + "\n➜ Senha: " + senha + "\n➜ DNS/URL: " + dns + "\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n";
+        msgFull += "📲 3️⃣ COMO CONFIGURAR NO APP\n➜ Se o aplicativo pedir 4 campos:\n• No campo Nome coloque qualquer nome.\n• Nos outros campos use os dados acima exatamente como estão.\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n";
+        msgFull += "📥 4️⃣ BAIXAR APLICATIVO\n➜ " + linkAppSelecionado + "\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n";
+        msgFull += "⏳ 5️⃣ VALIDADE DO ACESSO\n➜ Expira às: " + formatHora(vencimentoObj) + "\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n";
+        msgFull += "💰 6️⃣ RENOVAÇÃO / PLANOS\n➜ https://iptv-planos.vercel.app/\n";
+        msgFull += "━━━━━━━━\n━━━━━━━━\n";
+        msgFull += "✅ Acesso liberado com sucesso.\n⚡ Em caso de dúvidas, chame o suporte.";
 
         let msgSimple = `👤 Usuário: ${usuario}\n🔑 Senha: ${senha}\n📍 URL: ${dns}`;
 
@@ -508,23 +530,7 @@ async function gerarTeste() {
                     <h3 style="color:#fff; margin:10px 0; font-size:18px;">✅ ACESSO LIBERADO</h3>
                 </div>
 
-                <div class="info-box">
-                    <span>👤 Nome do cliente</span>
-                    <b>${nomeInput}</b>
-                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
-                    <span>👤 Usuário</span>
-                    <b>${usuario}</b>
-                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
-                    <span>🔑 Senha</span>
-                    <b>${senha}</b>
-                    <hr style="border:0; border-top:1px solid rgba(255,255,255,0.05); margin:8px 0;">
-                    <span>📍 URL / DNS</span>
-                    <b style="font-size:12px;">${dns}</b>
-                </div>
-
-                <div class="aviso-expira" style="background: rgba(0, 255, 136, 0.05); color: var(--primary); border: 1px solid var(--primary); margin-top: 10px; font-weight:600;">
-                    💡 DICA: Se o app pedir 4 campos, coloque qualquer nome no primeiro campo.
-                </div>
+                <div class="info-box">${msgFull}</div>
 
                 <div style="margin-top:20px;">
                     <button class="btn-copy-full" onclick="copiarTexto('${msgFull.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '🚀 Ticket Profissional Copiado!')">
@@ -545,18 +551,21 @@ async function gerarTeste() {
                 </a>
 
                 <div class="aviso-expira">
-                    Acesso expira às <b>${formatHora(vencimento)}</b>. Contrate o plano mensal pelo suporte.
+                    Acesso expira em: <b id="clock-display">00:00:00</b>. Contrate o plano mensal pelo suporte.
                 </div>
             `;
-        }, 800);
+            iniciarCronometro(tempoVencimento);
+        }, 3500);
 
     } catch (error) {
         pContainer.style.display = "none";
         resultado.style.display = "block";
         resultado.innerHTML = "❌ Erro Crítico: Verifique a conexão com o servidor.";
     } finally {
-        btn.disabled = false;
-        btn.innerText = "GERAR ACESSO IMEDIATO";
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerText = "GERAR ACESSO IMEDIATO";
+        }, 4000);
     }
 }
 
