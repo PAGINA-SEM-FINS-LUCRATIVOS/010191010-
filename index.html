@@ -432,7 +432,7 @@ function liberarSistema(mensagem) {
 
 function iniciarCronometro(vencimento) {
     if (timerInterval) clearInterval(timerInterval);
-    
+
     function atualizar() {
         const agora = new Date().getTime();
         const dist = vencimento - agora;
@@ -455,12 +455,20 @@ async function gerarTeste() {
     const btn = document.getElementById("btnGerar");
     const nomeInput = document.getElementById("nome").value.trim();
     const dispositivo = document.getElementById("dispositivo").value;
-    const conteudo = document.getElementById("conteudo").value;
+    const conteudoSelected = document.getElementById("conteudo").value;
     const resultado = document.getElementById("resultado");
     const pContainer = document.getElementById("progressContainer");
     const pBar = document.getElementById("progressBar");
 
     if (!nomeInput) { showToast("⚠️ Por favor, preencha o nome do cliente!"); return; }
+
+    // SELEÇÃO DE API BASEADA NO CONTEÚDO
+    let apiUrl = "";
+    if (conteudoSelected === "adulto") {
+        apiUrl = "https://meuservidor.sigma.vin/api/chatbot/0VDVVonDK3/RYAWRk1jlx"; // API ADULTO
+    } else {
+        apiUrl = "https://meuservidor.sigma.vin/api/chatbot/0VDVVonDK3/rdqLkQWAE9"; // API SEM ADULTO
+    }
 
     btn.disabled = true;
     btn.innerText = "Sincronizando Banco de Dados...";
@@ -468,15 +476,14 @@ async function gerarTeste() {
     pContainer.style.display = "block";
     pBar.style.width = "0%";
 
-    // MELHORIA: Logs de atividade no botão
     setTimeout(() => { btn.innerText = "Reservando vaga no Cloud..."; pBar.style.width = "30%"; }, 1000);
     setTimeout(() => { btn.innerText = "Criptografando Acesso VIP..."; pBar.style.width = "60%"; }, 2500);
 
     try {
-        const response = await fetch("https://meuservidor.sigma.vin/api/chatbot/0VDVVonDK3/RYAWRk1jlx", {
+        const response = await fetch(apiUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nome: nomeInput, conteudo: conteudo })
+            body: JSON.stringify({ nome: nomeInput, conteudo: conteudoSelected })
         });
 
         const data = await response.json();
