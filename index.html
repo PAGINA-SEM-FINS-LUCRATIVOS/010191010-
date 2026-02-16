@@ -368,9 +368,10 @@
         <div class="form-group">
             <label>📱 Seu Dispositivo</label>
             <select id="dispositivo">
+                <option value="smarttv">📺 SMART TV (Smarters Player Lite)</option>
                 <option value="android">🤖 Android / TV Box</option>
                 <option value="ios">🍎 iPhone / iPad / Apple TV</option>
-                <option value="roku">📺 Roku TV / Smart TV</option>
+                <option value="roku">📺 Roku TV</option>
                 <option value="pc">💻 Computador / Web Player</option>
             </select>
         </div>
@@ -510,10 +511,14 @@ async function gerarTeste() {
 
         const usuario = data.usuario || data.username || "ERRO";
         const senha = data.senha || data.password || "ERRO";
-        const dns = "http://dnscloud.shop:80";
+
+        // DNS Condicional
+        const dns = (dispositivo === "smarttv") ? "http://cdn.dnscloud.shop:80" : "http://dnscloud.shop:80";
+
         const webPlayer = "http://webplayer.veloznetv.fun";
 
         const linksApps = {
+            smarttv: "Smarters Player Lite",
             android: "https://xciptv.br.uptodown.com/android",
             ios: "https://apps.apple.com/app/id6459474877",
             roku: "https://www.roku.com/br",
@@ -526,22 +531,13 @@ async function gerarTeste() {
         const vencimentoObj = new Date(tempoVencimento);
         const formatHora = (d) => d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
 
-        // SEU MODELO DE TEXTO APLICADO
-        let msgFull = "💎 TESTE GERADO • \nACESSO AO IPTV 💎\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n\n";
-        msgFull += "👤 1️⃣ CLIENTE\n➜ Nome: " + nomeInput + "\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n";
-        msgFull += "🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: " + usuario + "\n➜ Senha: " + senha + "\n➜ DNS/URL: " + dns + "\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n";
-        msgFull += "📲 3️⃣ COMO CONFIGURAR NO APP\n➜ Se o aplicativo pedir 4 campos:\n• No campo Nome coloque qualquer nome.\n• Nos outros campos use os dados acima exatamente como estão.\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n";
-        msgFull += "📥 4️⃣ BAIXAR APLICATIVO\n➜ " + linkAppSelecionado + "\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n";
-        msgFull += "⏳ 5️⃣ VALIDADE DO ACESSO\n➜ Expira às: " + formatHora(vencimentoObj) + "\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n";
-        msgFull += "💰 6️⃣ RENOVAÇÃO / PLANOS\n➜ https://iptv-planos.vercel.app/\n";
-        msgFull += "━━━━━━━━\n━━━━━━━━\n";
-        msgFull += "✅ Acesso liberado com sucesso.\n⚡ Em caso de dúvidas, chame o suporte.";
+        let msgFull = "";
+
+        if (dispositivo === "smarttv") {
+            msgFull = `💎 TESTE GERADO • ACESSO IPTV 💎\n(SMART TV) ✅🃏\n━━━━━━━━\n━━━━━━━━\n\n👤 1️⃣ CLIENTE\n➜ Nome: ${nomeInput}\n\n━━━━━━━━\n━━━━━━━━\n\n🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: ${usuario}\n➜ Senha: ${senha}\n➜ DNS/URL: ${dns}\n\n━━━━━━━━\n━━━━━━━━\n\n📲 3️⃣ COMO CONFIGURAR NO APLICATIVO\n\nSe o aplicativo solicitar 4 campos:\n\n• No campo Nome, coloque qualquer nome.\n• Nos demais campos, utilize os dados acima exatamente como estão.\n\n━━━━━━━━\n━━━━━━━━\n\n📺 4️⃣ ATENÇÃO – USO EM SMART TV (OBRIGATÓRIO)\n\n⚠️ Para utilizar nosso IPTV na SMART TV, é OBRIGATÓRIO baixar o aplicativo:\n\n➡ Smarters Player Lite\n\nSem esse aplicativo o acesso não funcionará corretamente na TV.\n\n🔎 Vá até a loja de aplicativos da sua Smart TV (Samsung, LG, Android TV, etc.)\nPesquise por: Smarters Player Lite\nInstale o app e depois insira os dados de acesso informados acima.\n\n━━━━━━━━\n━━━━━━━━\n\n⏳ 6️⃣ VALIDADE DO TESTE\n➜ Expira às: ${formatHora(vencimentoObj)}\n\n━━━━━━━━\n━━━━━━━━\n\n💰 7️⃣ RENOVAÇÃO / PLANOS\n➜ https://iptv-planos.vercel.app/\n\n━━━━━━━━\n━━━━━━━━\n\n✅ Acesso liberado com sucesso.\n⚡ Em caso de dúvidas, chame o suporte.`;
+        } else {
+            msgFull = `💎 TESTE GERADO • \nACESSO AO IPTV 💎\n━━━━━━━━\n━━━━━━━━\n\n👤 1️⃣ CLIENTE\n➜ Nome: ${nomeInput}\n━━━━━━━━\n━━━━━━━━\n🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: ${usuario}\n➜ Senha: ${senha}\n➜ DNS/URL: ${dns}\n━━━━━━━━\n━━━━━━━━\n📲 3️⃣ CONFIGURAR NO APP\n➜ Use os dados acima no seu app.\n━━━━━━━━\n━━━━━━━━\n📥 4️⃣ BAIXAR APP\n➜ ${linkAppSelecionado}\n━━━━━━━━\n━━━━━━━━\n⏳ 5️⃣ VALIDADE\n➜ Expira às: ${formatHora(vencimentoObj)}\n━━━━━━━━\n━━━━━━━━\n💰 6️⃣ PLANOS\n➜ https://iptv-planos.vercel.app/\n━━━━━━━━\n━━━━━━━━\n✅ Acesso liberado!`;
+        }
 
         let msgSimple = `👤 Login: ${usuario}\n🔑 Senha: ${senha}\n📍 DNS: ${dns}`;
 
@@ -558,11 +554,11 @@ async function gerarTeste() {
                 <div class="info-box">${msgFull}</div>
 
                 <div style="margin-top:20px;">
-                    <button class="btn-copy-full" onclick="copiarTexto('${msgFull.replace(/'/g, "\\'").replace(/\n/g, "\\n")}', '🚀 Ticket Copiado!')">
+                    <button class="btn-copy-full" id="btnCopyFull" onclick="copiarTextoTicket(\`${msgFull}\`, '🚀 Ticket Copiado!', this)">
                         📋 COPIAR TICKET COMPLETO
                     </button>
 
-                    <button class="btn-copy-simple" onclick="copiarTexto('${msgSimple.replace(/\n/g, "\\n")}', '🔑 Login Copiado!')">
+                    <button class="btn-copy-simple" onclick="copiarTextoSimple('${msgSimple.replace(/\n/g, "\\n")}', '🔑 Login Copiado!')">
                         📄 COPIAR APENAS DADOS
                     </button>
                 </div>
@@ -571,9 +567,7 @@ async function gerarTeste() {
                     💬 ENVIAR PARA WHATSAPP
                 </a>
 
-                <a href="${linkAppSelecionado}" class="download-link" target="_blank">
-                   📥 BAIXAR APLICATIVO OFICIAL
-                </a>
+                ${dispositivo !== 'smarttv' ? `<a href="${linkAppSelecionado}" class="download-link" target="_blank">📥 BAIXAR APLICATIVO OFICIAL</a>` : ''}
 
                 <div class="aviso-expira">
                     ⏳ Expira em: <b id="clock-display">00:00:00</b>
@@ -594,7 +588,22 @@ async function gerarTeste() {
     }
 }
 
-function copiarTexto(texto, aviso) {
+function copiarTextoTicket(texto, aviso, elemento) {
+    navigator.clipboard.writeText(texto).then(() => {
+        showToast(aviso);
+        const originalText = elemento.innerHTML;
+        elemento.style.background = "var(--primary)";
+        elemento.style.color = "black";
+        elemento.innerHTML = "✅ TICKET COPIADO!";
+        setTimeout(() => {
+            elemento.style.background = "";
+            elemento.style.color = "";
+            elemento.innerHTML = originalText;
+        }, 2000);
+    });
+}
+
+function copiarTextoSimple(texto, aviso) {
     const textoFormatado = texto.replace(/\\n/g, '\n');
     navigator.clipboard.writeText(textoFormatado).then(() => {
         showToast(aviso);
