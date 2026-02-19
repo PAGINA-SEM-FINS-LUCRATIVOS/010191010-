@@ -514,14 +514,13 @@ async function gerarTeste() {
 
         // DNS Condicional
         const dns = (dispositivo === "smarttv") ? "http://cdn.dnscloud.shop:80" : "http://dnscloud.shop:80";
-
         const webPlayer = "http://webplayer.veloznetv.fun";
 
         const linksApps = {
             smarttv: "Smarters Player Lite",
             android: "https://xciptv.br.uptodown.com/android",
             ios: "https://apps.apple.com/app/id6459474877",
-            roku: "https://www.roku.com/br",
+            roku: "https://channelstore.roku.com/pt-br/details/d2cca4161beb56e990b1f112e6133cdf:1bed315b535a8d2ba015d0beb5f63189/iptv-pro-player-m3u-streamer",
             pc: webPlayer
         };
 
@@ -533,7 +532,9 @@ async function gerarTeste() {
 
         let msgFull = "";
 
-        if (dispositivo === "smarttv") {
+        if (dispositivo === "roku") {
+            msgFull = `💎 TESTE GERADO • ACESSO IPTV 💎\n━━━━━━━━\n━━━━━━━━\n\n👤 1️⃣ CLIENTE\n➜ Nome: ${nomeInput}\n\n━━━━━━━━\n━━━━━━━━\n\n🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: ${usuario}\n➜ Senha: ${senha}\n➜ DNS/URL:\nhttp://dnscloud.shop:80/get.php?username=${usuario}&password=${senha}&type=m3u_plus&output=mpegts\n\n⚠️ IMPORTANTE:\nO username e password do link devem ser os mesmos gerados na API.\n\n━━━━━━━━\n━━━━━━━━\n\n📲 3️⃣ CONFIGURAÇÃO NA TV (ROKU)\n\n✅ PASSO 1\nAbra o aplicativo na TV.\n\nNo canto da tela haverá um QR Code — escaneie com seu celular.\n\nApós abrir o site no celular:\n\t1.	Clique em GET STARTED\n\t2.	Selecione + Add XC Playlist\n\n📝 Preenchimento:\n➜ Nome: Pode ser qualquer nome (seu nome ou aleatório)\n➜ URL: http://dnscloud.shop:80\n➜ Username: ${usuario}\n➜ Password: ${senha}\n\nDepois clique em Submit.\n\n✔️ Aparecerá uma mensagem verde confirmando.\n\nAgora volte ao aplicativo na TV:\n➜ Aperte no controle a opção de reload (ícone com 2 setas)\n➜ Sua lista irá carregar\n➜ Basta clicar e começar a usar\n\n━━━━━━━━\n━━━━━━━━\n\n📥 4️⃣ BAIXAR O APLICATIVO\n➜ IPTV PRO Player (M3U Streamer)\nLink:\n${linkAppSelecionado}\n\n━━━━━━━━\n━━━━━━━━\n\n⏳ 5️⃣ VALIDADE\n➜ Expira às: ${formatHora(vencimentoObj)}\n\n━━━━━━━━\n━━━━━━━━\n\n💰 6️⃣ PLANOS DISPONÍVEIS\n➜ https://iptv-planos.vercel.app/\n\n━━━━━━━━\n━━━━━━━━\n\n✅ ACESSO LIBERADO COM SUCESSO!`;
+        } else if (dispositivo === "smarttv") {
             msgFull = `💎 TESTE GERADO • ACESSO IPTV 💎\n(SMART TV) ✅🃏\n━━━━━━━━\n━━━━━━━━\n\n👤 1️⃣ CLIENTE\n➜ Nome: ${nomeInput}\n\n━━━━━━━━\n━━━━━━━━\n\n🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: ${usuario}\n➜ Senha: ${senha}\n➜ DNS/URL: ${dns}\n\n━━━━━━━━\n━━━━━━━━\n\n📲 3️⃣ COMO CONFIGURAR NO APLICATIVO\n\nSe o aplicativo solicitar 4 campos:\n\n• No campo Nome, coloque qualquer nome.\n• Nos demais campos, utilize os dados acima exatamente como estão.\n\n━━━━━━━━\n━━━━━━━━\n\n📺 4️⃣ ATENÇÃO – USO EM SMART TV (OBRIGATÓRIO)\n\n⚠️ Para utilizar nosso IPTV na SMART TV, é OBRIGATÓRIO baixar o aplicativo:\n\n➡ Smarters Player Lite\n\nSem esse aplicativo o acesso não funcionará corretamente na TV.\n\n🔎 Vá até a loja de aplicativos da sua Smart TV (Samsung, LG, Android TV, etc.)\nPesquise por: Smarters Player Lite\nInstale o app e depois insira os dados de acesso informados acima.\n\n━━━━━━━━\n━━━━━━━━\n\n⏳ 6️⃣ VALIDADE DO TESTE\n➜ Expira às: ${formatHora(vencimentoObj)}\n\n━━━━━━━━\n━━━━━━━━\n\n💰 7️⃣ RENOVAÇÃO / PLANOS\n➜ https://iptv-planos.vercel.app/\n\n━━━━━━━━\n━━━━━━━━\n\n✅ Acesso liberado com sucesso.\n⚡ Em caso de dúvidas, chame o suporte.`;
         } else {
             msgFull = `💎 TESTE GERADO • \nACESSO AO IPTV 💎\n━━━━━━━━\n━━━━━━━━\n\n👤 1️⃣ CLIENTE\n➜ Nome: ${nomeInput}\n━━━━━━━━\n━━━━━━━━\n🔐 2️⃣ DADOS DE ACESSO\n➜ Usuário: ${usuario}\n➜ Senha: ${senha}\n➜ DNS/URL: ${dns}\n━━━━━━━━\n━━━━━━━━\n📲 3️⃣ CONFIGURAR NO APP\n➜ Use os dados acima no seu app.\n━━━━━━━━\n━━━━━━━━\n📥 4️⃣ BAIXAR APP\n➜ ${linkAppSelecionado}\n━━━━━━━━\n━━━━━━━━\n⏳ 5️⃣ VALIDADE\n➜ Expira às: ${formatHora(vencimentoObj)}\n━━━━━━━━\n━━━━━━━━\n💰 6️⃣ PLANOS\n➜ https://iptv-planos.vercel.app/\n━━━━━━━━\n━━━━━━━━\n✅ Acesso liberado!`;
